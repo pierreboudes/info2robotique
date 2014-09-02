@@ -1,0 +1,24 @@
+* Boids
+
+M. Tortue écrit un programme de Boids en /Python turtle/. Initialement, il tire au
+hasard la position $P_0, ..., P_9$ de 10 tortues à l'écran (des vecteurs
+$\overrightarrow{P_i} = (px[i],\; py[i])$), et il leur attribue une vitesse nulle
+(un vecteur $\overrightarrow{v_i} = (vx[i],\;vy[i])$) à chacune. Le
+reste du programme est dans un boucle infinie. M. Tortue applique
+deux règles pour calculer la nouvelle vitesse de chacune des tortues.
+L'influence des règles est déterminée par des paramètres globaux $\alpha > 0$ et
+$\beta > 0$.
+- Règle 1 :: Calculer le centre du groupe $C$ de tortue et, pour chaque
+             tortue i, ajouter à sa vitesse une composante $\alpha \times \overrightarrow{P_{i}C}$
+             ramenant la tortue i vers le centre.
+- Règle 2 :: Calculer la moyenne des vitesses
+             $\overrightarrow{m}$ du groupe de tortue, et pour chaque tortue i,
+             ajouter à $v_i$ un composante $\beta \times \overrightarrow{m}$.
+Après quoi la position de chaque tortue est modifiée en lui ajoutant sa
+propre vitesse.
+
+1. Que va t'il arriver avec ce groupe de tortues ?
+
+2. Pouvez-vous suggérer à M. Tortue une troisième règle (en pseudo-code)
+   qui lui permette de simuler de façon un peu plus réaliste un groupe
+   d'oiseaux ?

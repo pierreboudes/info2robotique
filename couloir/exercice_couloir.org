@@ -1,0 +1,171 @@
+* Déplacement probabiliste d'un robot dans un couloir
+
+Pippo a écrit un programme qui simule de façon
+probabiliste le déplacement d'un robot dans un couloir. Plus
+précisément le problème résolu est le suivant.
+
+#+BEGIN_QUOTE
+Un robot se déplace dans un couloir de N cases, en avançant case par
+case dans l'une ou l'autre des deux directions. À chaque fois que le
+robot se déplace d'une case il y a une probabilité ~p[0]~ qu'il ne se
+soit pas déplacé (il reste sur sa case d'origine), une probabilité
+~p[1]~ qu'il se soit déplacé d'exactement une case dans la bonne
+direction, une probabilité ~p[2]~ qu'il soit allé trop loin d'une
+case, etc. Le nombre de possibilités d'erreurs peut varier, mais la
+somme des probabilités fait toujours 1. Écrire un programme qui simule
+le déplacement du robot à l'aide d'actions au clavier lui ordonnant de
+prendre l'une ou l'autre des deux directions, et, pour chaque, case
+afficher sa probabilité de présence en cette case.
+#+END_QUOTE
+
+Pippo a construit un programme complet et correct mais le rayonnement
+cosmique a effacé la fonction ~deplacer_ouest~  de son programme. Voici presque intégralement
+#+NAME: couloir.py
+#+BEGIN_SRC python -n
+  # Paramètres ####
+  N = 10
+  p = [0., 0.7, 0.2, 0.1]
+  K = len(p)
+
+  def un_char():
+      # Cette fonction récupère un caractère auprès de l'utilisateur sans
+      # qu'il soit nécessaire que celui-ci tape <entrée>.
+      import sys, tty, termios
+      fd = sys.stdin.fileno()
+      old_settings = termios.tcgetattr(fd)
+      try:
+          # passage en mode caractère
+          tty.setraw(sys.stdin.fileno())
+          ch = sys.stdin.read(1)
+      finally:
+          # retour en mode ligne
+          termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+          return ch
+
+  def deplacer_est(t): # une case vers la droite ->
+      res = [0 for i in range(N)]
+      for i in range(N):
+          for j in range(0, min(i + 1, K)):
+              res[i] += t[i - j] * p[j]
+      return res
+
+  def deplacer_ouest(t): # une case vers la gauche <-
+      crrr crrr crrr crr crrr
+      cr crrrrr crrr ...
+      crr cr crr crrr crrr
+
+  def main():
+      t = [0 for i in range(N)] #terrain (un couloir)
+      t[0] = 1. #position initiale
+      continuer = True
+      while (continuer):
+            affichage_joli = [round(e, 2) for e in t]
+            print affichage_joli # affichage avec moins de décimales
+            c = un_char() # saisie utilisateur
+            if ((c == 'j')  or (c == 'J')):
+                t = deplacer_ouest(t)
+            if ((c == 'l')  or (c == 'L')):
+                t = deplacer_est(t)
+            if ((c == 'q') or (c == 'Q')):
+                continuer = False
+
+  main()
+
+#+END_SRC
+
+Comportement observé du programme :
+#+BEGIN_EXAMPLE -n
+RobotiqueL1$ python couloir.py
+[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+<l'utilisateur tape L (déplacement vers l'Est)>
+[0.0, 0.7, 0.2, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+<l'utilisateur tape J (déplacement vers l'Ouest)>
+[0.54, 0.16, 0.07, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+<l'utilisateur tape J (déplacement vers l'Ouest)>
+[0.13, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+<l'utilisateur tape J (déplacement vers l'Ouest)>
+[0.03, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+<l'utilisateur tape J (déplacement vers l'Ouest)>
+[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+<l'utilisateur tape Q>
+#+END_EXAMPLE
+
+
+** Mettre en rapport le code et le comportement
+
+Pour chacune des questions suivantes répondre en donnant les numéros
+ des lignes concernées du programme de Pippo.
+1. Dans quelle case se trouve initialement le robot ?
+2. Quelle est la probabilité que le robot ne se déplace pas lorsqu'il
+   en a reçu l'ordre ?
+3. À chaque ordre de déplacement d'une case dans une direction de combien de cases au
+   maximum peut avancer le robot ?
+
+** Expliquer le comportement observé
+Dans le comportement observé à la fin juste avant de quitter, où se
+trouve le robot et pourquoi ?
+
+** Reconstituer le programme
+Aider Pippo à reconstituer la fonction ~deplacer_ouest~.
+
+** Pippo modifie le programme (2 pt)
+
+Pippo ajoute les trois lignes suivantes à la fonction  ~deplacer_est~,
+juste avant le ~return res~:
+#+BEGIN_SRC python
+    for i in range(0, K):
+        for j in range(i + 1, K):
+            res[N - 1] += t[N - 1 - i] * p[j]
+#+END_SRC
+ainsi que trois autres lignes à la fonction
+~deplacer_ouest~ réalisant l'opération symétrique.
+
+1. Expliquer ce que cela va changer au comportement général du robot.
+2. Si l'on reprend l'exemple utilisé pour le comportement observé,
+   c'est à dire si on tape L, puis quatre fois J, où se trouve le
+   robot à la fin (donner les valeurs du tableau) ?
+
+** Obstacle : à vous de modifier le programme
+On place un obstacle au milieu du couloir (case ~t[N/2]~) que le robot
+ne peut pas franchir lorsqu'il vient de l'Ouest et se déplace vers
+l'Est (il y a, par exemple une marche que le robot peut descendre mais
+ne peut pas monter). Lorsqu'il butte dans l'obstacle le robot reste
+dans sa case actuelle (la case ~t[N/2 - 1]~).
+
+1. Modifier le programme pour tenir compte de cet obstacle.
+
+2. Au bout d'un certain nombre de déplacements, y a t'il plus de chances
+   de trouver le robot à gauche (Ouest) ou à droite (Est) de
+   l'obstacle ?
+
+3. On considère maintenant que l'obstacle interdit également les
+   déplacements en provenance de l'Ouest (le robot reste alors en
+    ~t[N/2 + 1]~). Que devez vous également modifier dans le
+   programme ? (l'obstacle  est un mur qui occupe toute la case t[N/2]).
+
+4. Au départ le robot est placé dans l'une ou l'autre des deux cases
+   qui entourent l'obstacle avec une probabilité équivalente. Quel
+   doit être le tableau de probabilité initial ? Que faut-il modifier
+   dans le programme pour en tenir compte ?
+
+5. Au bout d'un certain nombre de déplacements, y a t'il plus de chances
+   de trouver le robot à gauche (Ouest) ou à droite (Est) de
+   l'obstacle ?
+
+** Damier
+Comment faire en sorte que le robot de Pippo se déplace maintenant sur
+un damier 8x8 ? Vous traiterez les deux cas : sans murs puis avec
+murs.
+
+Il est plus facile de commencer par traiter ce problème en considérant
+que le damier n'a pas de murs (le robot chute en bord de damier) puis
+de modifier le programme pour traiter le cas avec murs.
+
+Le tableau des probabilités reste un tableau à une dimension, qui
+représente quelle que soit la direction choisie, Sud, Est, Nord,
+Ouest, la probabilité d'avancer de zéro, une, deux etc. cases dans
+cette direction.
+
+Autrement dit, il n'y aucune incertitude sur la direction que suivra
+le robot, seule la distance parcourue répond à une distribution de
+probabilités.
