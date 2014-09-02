@@ -19,14 +19,14 @@ afficher sa probabilité de présence en cette case.
 #+END_QUOTE
 
 Pippo a construit un programme complet et correct mais le rayonnement
-cosmique a effacé la fonction ~deplacer_ouest~  de son programme. Voici presque intégralement
+cosmique a effacé la fonction ~deplacer_ouest~  de son programme. Voici son code.
 #+NAME: couloir.py
 #+BEGIN_SRC python -n
   # Paramètres ####
   N = 10
   p = [0., 0.7, 0.2, 0.1]
   K = len(p)
-
+  
   def un_char():
       # Cette fonction récupère un caractère auprès de l'utilisateur sans
       # qu'il soit nécessaire que celui-ci tape <entrée>.
@@ -41,19 +41,19 @@ cosmique a effacé la fonction ~deplacer_ouest~  de son programme. Voici presque
           # retour en mode ligne
           termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
           return ch
-
+  
   def deplacer_est(t): # une case vers la droite ->
       res = [0 for i in range(N)]
       for i in range(N):
           for j in range(0, min(i + 1, K)):
               res[i] += t[i - j] * p[j]
       return res
-
+  
   def deplacer_ouest(t): # une case vers la gauche <-
       crrr crrr crrr crr crrr
       cr crrrrr crrr ...
       crr cr crr crrr crrr
-
+  
   def main():
       t = [0 for i in range(N)] #terrain (un couloir)
       t[0] = 1. #position initiale
@@ -68,12 +68,11 @@ cosmique a effacé la fonction ~deplacer_ouest~  de son programme. Voici presque
                 t = deplacer_est(t)
             if ((c == 'q') or (c == 'Q')):
                 continuer = False
-
+  
   main()
-
 #+END_SRC
 
-Comportement observé du programme :
+Comportement observé du programme (avant attaque par les rayons cosmiques) :
 #+BEGIN_EXAMPLE -n
 RobotiqueL1$ python couloir.py
 [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -108,7 +107,7 @@ trouve le robot et pourquoi ?
 ** Reconstituer le programme
 Aider Pippo à reconstituer la fonction ~deplacer_ouest~.
 
-** Pippo modifie le programme (2 pt)
+** Pippo modifie le programme
 
 Pippo ajoute les trois lignes suivantes à la fonction  ~deplacer_est~,
 juste avant le ~return res~:
