@@ -17,7 +17,7 @@ def new_box(x,y,c):
     for i in range(4):
         V.fd(c)
         V.left(90)
-    return Polygon(Point(x-c/2,y-c/2),Point(x-c/2,y+c/2),Point(x+c/2,y+c/2),Point(x+c/2,y-c/2))
+    return Polygon(Point(x-c/2,-y-c/2),Point(x-c/2,-y+c/2),Point(x+c/2,-y+c/2),Point(x+c/2,-y-c/2))
 
 def telemetry(T,boxelist):
     a = radians(T.heading())
@@ -28,13 +28,16 @@ def telemetry(T,boxelist):
     #print intr
     return None if intr==[] else (min(intr)+np.random.normal(0,10))
 
-######### main ########
-T = turtle.Turtle()
-T.clearscreen()
-T.penup()
+if __name__ == '__main__':
 
-boxelist = [ new_box(0,0,400) ]
-boxelist += [ new_box(150*cos(1+i*2*pi/15),150*sin(1+i*2*pi/15),random.randint(10,40)) for i in range(12)]
+        ######### main ########
+        turtle.clearscreen()
+        T = turtle.Turtle()
+        T.penup()
+        
+        boxelist = [ new_box(0,0,400) ]
+        boxelist += [ new_box(150*cos(1+i*2*pi/15),150*sin(1+i*2*pi/15),random.randint(10,40)) for i in range(12)]
+        
+        print telemetry(T,boxelist)
+        raw_input()
 
-print telemetry(T,boxelist)
-raw_input()
